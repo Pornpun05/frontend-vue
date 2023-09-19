@@ -27,12 +27,18 @@
 
       <v-spacer></v-spacer>
 
+       <v-btn
+       text
+       @click="goToManage()"
+      >
+        หน้าจัดการข้อมูล
+      </v-btn>
+
       <v-btn
        text
        @click="goToLogin()"
       >
-        <span class="mr-2">Login</span>
-        <v-icon>mdi-open-in-new</v-icon>
+        <span class="mr-2">เข้าสู่ระบบ</span>
       </v-btn>
     </v-app-bar>
 
@@ -52,8 +58,11 @@ export default {
   }),
   methods: {
     goToLogin () {
-      this.$router.push('/login')
+      this.$router.push({ path:'/login'}).catch(()=>{})
+    },
+    goToManage () {
+      this.$router.push({ path:'/manageTable'}).catch(()=>{})
     }
-  }
+  }  
 }
 </script>
