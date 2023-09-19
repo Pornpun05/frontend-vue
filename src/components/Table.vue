@@ -138,11 +138,11 @@
         </v-dialog>
         <v-dialog v-model="dialogDelete" max-width="500px">
           <v-card>
-            <v-card-title class="text-h5">Are you sure you want to delete this item?</v-card-title>
+            <v-card-title class="text-h5">คุณต้องการลบข้อมูลนี้ในตารางใช่ หรือ ไม่</v-card-title>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="closeDelete">ยกเลิก</v-btn>
-              <v-btn color="blue darken-1" text @click="deleteItemConfirm">ตกลง</v-btn>
+              <v-btn color="blue darken-1" text @click="closeDelete()">ยกเลิก</v-btn>
+              <v-btn color="blue darken-1" text @click="deleteItemConfirm()">ตกลง</v-btn>
               <v-spacer></v-spacer>
             </v-card-actions>
           </v-card>
@@ -321,11 +321,10 @@
         }
         },
         closeDelete () {
-        this.dialogDelete = false
-        this.$nextTick(() => {
-          this.editedItem = Object.assign({}, this.defaultItem)
-          this.editedIndex = -1
-        })
+            this.dialogDelete = false
+            this.editedItem =[]
+            this.editedIndex = -1
+        }
       },
         save (action) {
         if (action === 'เพิ่มข้อมูล') {
@@ -337,5 +336,4 @@
         this.close()
       }
       }
-    }
 </script>
