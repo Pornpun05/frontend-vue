@@ -27,6 +27,13 @@
 
       <v-spacer></v-spacer>
 
+      <v-btn
+       text
+       @click="goToStudent()"
+      >
+        <span class="mr-2">Connect Backend</span>
+      </v-btn>
+
        <v-btn
        text
        @click="goToManage()"
@@ -40,6 +47,7 @@
       >
         <span class="mr-2">เข้าสู่ระบบ</span>
       </v-btn>
+
     </v-app-bar>
 
     <v-main>
@@ -62,6 +70,9 @@ export default {
     },
     goToManage () {
       this.$router.push({ path:'/manageTable'}).catch(()=>{})
+    },
+    goToStudent() {
+      this.$router.push({ path:'/manageStudent'}).catch(()=>{})
     }
   }  
 }

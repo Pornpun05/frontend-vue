@@ -1,6 +1,11 @@
 <template>
   <div>
-    <v-data-table :headers="headers" :items="employeeItem" class="elevation-1">
+    <v-data-table
+      :headers="headers"
+      :items="studentItem"
+      sort-by="calories"
+      class="elevation-1"
+    >
       <template v-slot:top>
         <v-toolbar flat>
           <v-toolbar-title>จัดการข้อมูล</v-toolbar-title>
@@ -16,11 +21,11 @@
           </v-btn>
         </v-toolbar>
       </template>
-      <template v-slot:[`item.role`]="{ item }">
-        {{ item.role === null ? "" : item.role.name }}
-      </template>
+      <!-- <template v-slot:[`item.role`]= "{ item }">
+        {{ item.role === null ? '' : item.role.name }}
+      </template> -->
       <template v-slot:[`item.actions`]="{ item }">
-        <v-btn small outlined @click="openDialog('edit', item)" color="green">
+        <v-btn small outlined @click="openDialog('edit', item)" color="blue">
           <v-icon> mdi-pencil </v-icon>
         </v-btn>
         <v-btn
@@ -47,18 +52,26 @@
           <v-container>
             <v-row>
               <v-col cols="12" sm="6" md="6">
-                <v-text-field v-model="firstname" label="ชื่อ"></v-text-field>
+                <v-text-field v-model="studentId" label="id"></v-text-field>
               </v-col>
               <v-col cols="12" sm="6" md="6">
-                <v-text-field v-model="lastname" label="นามสกุล"></v-text-field>
+                <v-text-field
+                  v-model="studentfirstName"
+                  label="ชื่อ"
+                ></v-text-field>
               </v-col>
               <v-col cols="12" sm="6" md="6">
-                <v-text-field v-model="salary" label="เงินเดือน"></v-text-field>
+                <v-text-field
+                  v-model="studentlastName"
+                  label="นามสกุล"
+                ></v-text-field>
               </v-col>
               <v-col cols="12" sm="6" md="6">
-                <v-text-field v-model="roles" label="ตำแหน่ง"></v-text-field>
+                <v-text-field
+                  v-model="studentEmail"
+                  label="email"
+                ></v-text-field>
               </v-col>
-              <v-col cols="12" sm="6" md="6"> </v-col>
             </v-row>
           </v-container>
         </v-card-text>
@@ -75,7 +88,7 @@
     <v-dialog v-model="dialogDelete" max-width="500px">
       <v-card>
         <v-card-title class="text-h5"
-          >คุณต้องการลบข้อมูลนี้ในตารางใช่ หรือ ไม่?</v-card-title
+          >ตุณต้องการลบข้อมูลนี้ในตารางใช่ หรือ ไม่?</v-card-title
         >
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -93,26 +106,20 @@
 <script>
 export default {
   data: () => ({
-    firstname: "",
-    lastname: "",
-    salary: "",
-    roles: "",
+    studentId: "",
+    studentfirstName: "",
+    studentlastName: "",
+    studentEmail: "",
     dialogCreate: false,
     dialogDelete: false,
     headers: [
-      {
-        text: "ไอดี",
-        align: "start",
-        sortable: false,
-        value: "id",
-      },
-      { text: "ชื่อ", value: "firstName" },
-      { text: "นามสกุล", value: "lastName" },
-      { text: "เงินเดือน", value: "salary" },
-      { text: "ตำแหน่ง", value: "role" },
+      { text: "รหัสนักศึกษา", value: "studentId" },
+      { text: "ชื่อ", value: "studentfirstName" },
+      { text: "นามสกุล", value: "studentlastName" },
+      { text: "email", value: "studentEmail" },
       { text: "จัดการ", value: "actions", sortable: false },
     ],
-    employeeItem: [],
+    studentItem: [],
     editedIndex: -1,
     editedItem: {
       name: "",
@@ -129,7 +136,7 @@ export default {
       protein: 0,
     },
     formTitle: "",
-    idEmployee: "",
+    idStudent: "",
     idforDelete: "",
   }),
 
@@ -148,11 +155,11 @@ export default {
 
   methods: {
     async initialize() {
-      this.employeeItem = [];
+      this.studentItem = [];
       try {
-        var data = await this.axios.get("http://localhost:9000/employee");
-        console.log("data employee ====>", data);
-        this.employeeItem = data.data;
+        var data = await this.axios.get("http://localhost:9000/student");
+        console.log("data student ====>", data);
+        this.studentItem = data.data;
       } catch (error) {}
     },
     openDialog(Action, item) {
@@ -164,16 +171,17 @@ export default {
       } else {
         this.formTitle = "แก้ไขข้อมูล";
         this.dialogCreate = true;
-        this.firstname = item.firstName;
-        this.lastname = item.lastName;
-        this.email = item.email;
-        this.idEmployee = item.id;
+        this.studentId = item.studentId;
+        this.studentfirstName = item.studentfirstName;
+        this.studentlastName = item.studentlastName;
+        this.studentEmail = item.studentEmail;
+        this.idstudent = item.id;
       }
     },
 
     editItem(item) {
       console.log("item select", item);
-      this.editedIndex = this.employeeItem.indexOf(item);
+      this.editedIndex = this.studentItem.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.dialog = true;
     },
@@ -186,7 +194,7 @@ export default {
     async deleteItemConfirm() {
       try {
         var response = await this.axios.delete(
-          "http://localhost:9000/employee/" + this.idforDelete
+          "http://localhost:9000/student/" + this.idforDelete
         );
         this.initialize();
       } catch (error) {
@@ -218,18 +226,15 @@ export default {
 
     async save(action) {
       var data = {
-        firstName: this.firstname,
-        lastName: this.lastname,
-        salary: this.salary,
-        role: {
-          name: this.roles,
-        },
-        skills: [{ skill: "" }],
+        studentId: this.studentId,
+        studentfirstName: this.studentfirstName,
+        studentlastName: this.studentlastName,
+        studentEmail: this.studentEmail,
       };
       if (action === "เพิ่มข้อมูล") {
         try {
           var dataResponse = await this.axios.post(
-            "http://localhost:9000/employee",
+            "http://localhost:9000/student",
             data
           );
           console.log("dataResponse ====>", dataResponse);
@@ -241,7 +246,7 @@ export default {
       } else {
         try {
           var dataResponse = await this.axios.put(
-            "http://localhost:9000/employee/" + this.idEmployee,
+            "http://localhost:9000/student/" + this.idstudent,
             data
           );
           console.log("dataResponse ====>", dataResponse);
@@ -255,4 +260,5 @@ export default {
   },
 };
 </script>
+
 <style></style>
