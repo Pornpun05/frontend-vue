@@ -113,6 +113,12 @@ export default {
     dialogCreate: false,
     dialogDelete: false,
     headers: [
+      {
+        text: "ไอดี",
+        align: "start",
+        sortable: false,
+        value: "id",
+      },
       { text: "รหัสนักศึกษา", value: "studentId" },
       { text: "ชื่อ", value: "studentfirstName" },
       { text: "นามสกุล", value: "studentlastName" },
@@ -157,7 +163,7 @@ export default {
     async initialize() {
       this.studentItem = [];
       try {
-        var data = await this.axios.get("http://localhost:9000/student");
+        var data = await this.axios.get("http://localhost:9000/students");
         console.log("data student ====>", data);
         this.studentItem = data.data;
       } catch (error) {}
@@ -194,7 +200,7 @@ export default {
     async deleteItemConfirm() {
       try {
         var response = await this.axios.delete(
-          "http://localhost:9000/student/" + this.idforDelete
+          "http://localhost:9000/students/" + this.idforDelete
         );
         this.initialize();
       } catch (error) {
@@ -234,7 +240,7 @@ export default {
       if (action === "เพิ่มข้อมูล") {
         try {
           var dataResponse = await this.axios.post(
-            "http://localhost:9000/student",
+            "http://localhost:9000/students",
             data
           );
           console.log("dataResponse ====>", dataResponse);
@@ -246,7 +252,7 @@ export default {
       } else {
         try {
           var dataResponse = await this.axios.put(
-            "http://localhost:9000/student/" + this.idstudent,
+            "http://localhost:9000/students/" + this.idstudent,
             data
           );
           console.log("dataResponse ====>", dataResponse);
